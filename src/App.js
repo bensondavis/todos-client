@@ -6,9 +6,6 @@ import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import LoginAndSignupPage from "./pages/LoginAndSignupPage";
 import Home from "./pages/Home";
 
-//usename - admin
-//6gC2HfTZmgpwnipn db pwd
-//xnqRv4LrEfyU4Txt db pwd - user
 function App() {
   const [user, setUser] = useState({});
   useEffect(() => {
