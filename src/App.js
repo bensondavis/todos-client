@@ -1,23 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Typography from "@mui/material/Typography";
+import "@fontsource/pacifico";
+import { useState, useEffect } from "react";
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
+import LoginAndSignupPage from "./pages/LoginAndSignupPage";
+import Home from "./pages/Home";
 
+//usename - admin
+//6gC2HfTZmgpwnipn db pwd
+//xnqRv4LrEfyU4Txt db pwd - user
 function App() {
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    const theUser = localStorage.getItem("user");
+
+    if (theUser && !theUser.includes("undefined")) {
+      setUser(JSON.parse(theUser));
+    }
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Typography className="title" fontFamily={"pacifico"}>
+        todos
+      </Typography>
+
+      <BrowserRouter>
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={user?.email ? <Navigate to="/home" /> : <LoginAndSignupPage />}
+          />
+          <Route
+            exact
+            path="/home"
+            element={user?.email ? <Home user={user} /> : <Navigate to="/" />}
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
