@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import useFetch from "../hooks/useFetch";
+import { Navigate } from "react-router-dom";
 
 const SignUp = () => {
-  const { handleGoogle, loading, error } = useFetch(
+  const { handleGoogle, loading, error, success } = useFetch(
     "http://localhost:8000/signup"
   );
 
@@ -46,6 +47,7 @@ const SignUp = () => {
           <div id="signUpDiv" data-text="signup_with"></div>
         )}
       </div>
+      {success ? <Navigate to="/home" />: null}
     </>
   );
 };

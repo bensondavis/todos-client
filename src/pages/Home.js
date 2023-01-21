@@ -1,7 +1,8 @@
 import Todos from "../components/Todos";
 import { Button } from "@mui/material";
+import withAuth from "../components/withAuth";
 
-export default function Home({ user }) {
+const Home = ({ user }) => {
 
   function handleSignOut() {
     localStorage.removeItem("user");
@@ -19,3 +20,4 @@ export default function Home({ user }) {
     </div>
   );
 }
+export default withAuth(Home);

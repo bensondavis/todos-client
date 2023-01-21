@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import useFetch from "../hooks/useFetch";
+import { Navigate } from "react-router-dom";
 
 const Login = () => {
-  const { handleGoogle, loading, error } = useFetch(
+  const { handleGoogle, loading, error, success } = useFetch(
     "http://localhost:8000/login"
   );
 
@@ -42,6 +43,7 @@ const Login = () => {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {loading ? <div>Loading....</div> : <div id="loginDiv"></div>}
       </div>
+      {success ? <Navigate to="/home" />: null}
     </>
   );
 };
