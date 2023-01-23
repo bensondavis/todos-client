@@ -1,23 +1,69 @@
 import Todos from "../components/Todos";
-import { Button } from "@mui/material";
-import withAuth from "../components/withAuth";
+import DoneIcon from "@mui/icons-material/Done";
+import AddIcon from "@mui/icons-material/Add";
+import { IconButton } from "@mui/material";
+import { useEffect, useState } from "react";
+import addTodo from "../apis/addTodo";
+import getTodo from "../apis/getTodo";
 
-const Home = ({ user }) => {
+const Home = ({ user, setUser }) => {
+  const [todoList, setTodoList] = useState([]);
+  const [todo, setTodo] = useState("");
+
+  useEffect(() => {
+    getTodo(user.email, user.token, todoList, setTodoList);
+  }, []);
+
+  const handleChange = (value) => {
+    setTodo(value);
+  };
+
+  const handleSubmit = () => {
+    if (todo !== "") {
+      const content = {
+        completed: false,
+        todoItem: todo,
+      };
+      addTodo(user.email, content, user.token, setTodoList, todoList);
+      setTodo("");
+    }
+  };
 
   function handleSignOut() {
     localStorage.removeItem("user");
-    window.location.reload();
+    setUser({});
   }
 
   return (
-    <div className="content">
-      {/* <img className="profile-pic" src={user.picture} alt="img"></img> */}
-      {/* <h3>{user.name}</h3> */}
-      <Button variant="contained" onClick={handleSignOut}>
-        Sign Out
-      </Button>
-      <Todos />
-    </div>
+    <>
+      <div
+        className="content"
+        style={{ maxWidth: "700px", position: "relative" }}
+      >
+        <IconButton sx={{ position: "absolute", zIndex: 2, top: 12, left: 12 }}>
+          <DoneIcon />
+        </IconButton>
+        <input
+          className="new-todo"
+          placeholder="What needs to be done?"
+          value={todo}
+          autoFocus={true}
+          onChange={(e) => handleChange(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit();
+            }
+          }}
+        />
+        <IconButton
+          sx={{ position: "absolute", zIndex: 2, top: 12, right: 12 }}
+          onClick={handleSubmit}
+        >
+          <AddIcon />
+        </IconButton>
+      </div>
+      <Todos todoList={todoList} token={user.token} user={user} />
+    </>
   );
-}
-export default withAuth(Home);
+};
+export default Home;
