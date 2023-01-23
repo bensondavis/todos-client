@@ -14,20 +14,18 @@ const useFetch = (url) => {
         credential: response.credential,
       })
       .then((res) => {
-        console.log({ res });
         setLoading(false);
 
         if (res.data.user) {
           localStorage.setItem("user", JSON.stringify(res.data.user));
           setSuccess(true);
-          console.log("success true");
         }
       })
       .catch((err) => {
         setError("Error: " + err.response.data.message);
       });
   };
-  return { loading, error, handleGoogle, success };
+  return { loading, error, handleGoogle, success, setSuccess};
 };
 
 export default useFetch;

@@ -39,7 +39,11 @@ function App() {
 
   return (
     <div className="App">
-      <Typography className="title" fontFamily={"pacifico"} sx={{userSelect: "none"}}>
+      <Typography
+        className="title"
+        fontFamily={"pacifico"}
+        sx={{ userSelect: "none" }}
+      >
         todos
       </Typography>
 
@@ -48,23 +52,48 @@ function App() {
           <Route
             exact
             path="/signup"
-            element={user?.email ? <Navigate to="/home" /> : <SignupPage setUser={setUser} />}
+            element={
+              user?.email ? (
+                <Navigate to="/home" />
+              ) : (
+                <SignupPage setUser={setUser} />
+              )
+            }
           />
           <Route
             exact
             path="/login"
-            element={user?.email ? <Navigate to="/home" /> : <LoginPage setUser={setUser} />}
+            element={
+              user?.email ? (
+                <Navigate to="/home" />
+              ) : (
+                <LoginPage setUser={setUser} />
+              )
+            }
           />
           <Route
             exact
             path="/home"
             element={
-              user?.email ? <Home user={user} setUser={setUser} /> : <Navigate to="/login" />
+              user?.email ? (
+                <Home user={user} setUser={setUser} />
+              ) : (
+                <Navigate to="/login" />
+              )
             }
           />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
+      <footer>
+        <Typography variant="body2">Double-Click to edit</Typography>
+        <Typography variant="body2">
+          Made with ❤️ by{" "}
+          <a target={"_blank"} href="https://github.com/bensondavis">
+            Benson
+          </a>
+        </Typography>
+      </footer>
     </div>
   );
 }

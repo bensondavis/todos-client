@@ -29,10 +29,10 @@ const Home = ({ user, setUser }) => {
     }
   };
 
-  function handleSignOut() {
-    localStorage.removeItem("user");
-    setUser({});
-  }
+  // function handleSignOut() {
+  //   localStorage.removeItem("user");
+  //   setUser({});
+  // }
 
   return (
     <>
@@ -44,6 +44,7 @@ const Home = ({ user, setUser }) => {
           <DoneIcon />
         </IconButton>
         <input
+        style={{marginBottom: 5}}
           className="new-todo"
           placeholder="What needs to be done?"
           value={todo}
@@ -62,7 +63,9 @@ const Home = ({ user, setUser }) => {
           <AddIcon />
         </IconButton>
       </div>
-      <Todos todoList={todoList} token={user.token} user={user} />
+      <div className="outer">
+        <Todos todoList={todoList} user={user} setTodoList={setTodoList} />
+      </div>
     </>
   );
 };

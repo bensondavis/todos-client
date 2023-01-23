@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import useFetch from "../hooks/useFetch";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { Stack } from "@mui/material";
+import { Stack, CircularProgress, Typography } from "@mui/material";
 
-const SignUp = ({setUser}) => {
+const SignUp = ({ setUser }) => {
   const { handleGoogle, loading, error, success } = useFetch(
     "http://localhost:8000/signup"
   );
@@ -15,26 +15,6 @@ const SignUp = ({setUser}) => {
     }
   }, [success]);
 
-  // useEffect(() => {
-  //   /* global google */
-  //   if (window.google) {
-  //     google.accounts.id.initialize({
-  //       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-  //       callback: handleGoogle,
-  //     });
-
-  //     google.accounts.id.renderButton(document.getElementById("signUpDiv"), {
-  //       // type: "standard",
-  //       theme: "filled_black",
-  //       // size: "small",
-  //       text: "continue_with",
-  //       shape: "pill",
-  //     });
-
-  //     // google.accounts.id.prompt()
-  //   }
-  // }, [handleGoogle]);
-
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
       <header style={{ textAlign: "center" }}>
@@ -45,9 +25,8 @@ const SignUp = ({setUser}) => {
         alignItems={"center"}
         justifyContent={"center"}
       >
-        {error && <p style={{ color: "red" }}>{error}</p>}
         {loading ? (
-          <div>Loading....</div>
+          <CircularProgress color="#ead9d9" />
         ) : (
           <GoogleLogin
             shape="pill"
@@ -61,6 +40,11 @@ const SignUp = ({setUser}) => {
               console.log("Login Failed");
             }}
           />
+        )}
+        {error && (
+          <Typography variant="body2" style={{ color: "red" }}>
+            {error}
+          </Typography>
         )}
       </Stack>
     </GoogleOAuthProvider>

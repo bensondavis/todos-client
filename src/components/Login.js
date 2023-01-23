@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import useFetch from "../hooks/useFetch";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { Stack } from "@mui/material";
+import { Stack, CircularProgress, Typography } from "@mui/material";
 
 function Login({ setUser }) {
-  const { handleGoogle, loading, error, success } = useFetch(
+  const { handleGoogle, loading, error, success, setSuccess} = useFetch(
     "http://localhost:8000/login"
   );
 
@@ -12,6 +12,7 @@ function Login({ setUser }) {
     if (success) {
       const temp = JSON.parse(localStorage.getItem("user"));
       setUser(temp);
+      setSuccess(false);
     }
   }, [success]);
 
@@ -26,7 +27,7 @@ function Login({ setUser }) {
         justifyContent={"center"}
       >
         {loading ? (
-          <div>Loading....</div>
+          <CircularProgress color="#ead9d9" />
         ) : (
           <GoogleLogin
             shape="pill"
@@ -42,7 +43,7 @@ function Login({ setUser }) {
           />
         )}
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <Typography variant="body2" style={{ color: "red" }}>{error}</Typography>}
       </Stack>
     </GoogleOAuthProvider>
     // </>
