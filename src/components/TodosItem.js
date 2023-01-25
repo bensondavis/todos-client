@@ -6,28 +6,32 @@ import { useEffect, useState, useRef } from "react";
 import { useDoubleTap } from "use-double-tap";
 import { IconButton } from "@mui/material";
 
-export default function TodosItem({ data, index, onChange, onDelete}) {
-  const [value, setValue] = useState(data.todoItem);
-  const [complete, setComplete] = useState(data.completed);
+export default function TodosItem({
+  id,
+  onDelete,
+  todoItem,
+  completed,
+  editTodo,
+  editCompleted,
+}) {
+  const [value, setValue] = useState(todoItem);
+  const [checked, setChecked] = useState(completed);
   const [edited, setEdited] = useState(false);
   const [readOnly, setReadOnly] = useState(true);
   const [hover, setHover] = useState(false);
   const textareaRef = useRef(null);
 
   const bind = useDoubleTap((event) => {
-    if (!complete) setReadOnly(false);
+    if (!completed) setReadOnly(false);
   });
 
   const handleCheckbox = (event) => {
-    setComplete(!complete);
-    setEdited(true);
+    setChecked(event.target.checked);
+    editCompleted(id, event.target.checked);
   };
 
   const handleSubmit = () => {
-    onChange(data._id, {
-      todoItem: value,
-      completed: complete,
-    })
+    editTodo(id, value);
   };
 
   const handleChange = (value) => {
@@ -42,12 +46,9 @@ export default function TodosItem({ data, index, onChange, onDelete}) {
     }
   }, [readOnly]);
 
-  useEffect(() => {
-    if (edited) {
-      handleSubmit();
-      setEdited(false);
-    }
-  }, [complete]);
+  useEffect(()=> {
+    setChecked(completed);
+  }, [completed])
 
   const completedTextStyle = {
     textDecoration: "line-through",
@@ -61,7 +62,7 @@ export default function TodosItem({ data, index, onChange, onDelete}) {
   }, [value]);
 
   const handleDelete = () => {
-    onDelete(data._id,index);
+    onDelete(id);
   };
 
   return (
@@ -78,7 +79,7 @@ export default function TodosItem({ data, index, onChange, onDelete}) {
         onMouseLeave={() => setHover(false)}
       >
         <Checkbox
-          defaultChecked={complete}
+          checked={checked}
           sx={{
             "& .MuiSvgIcon-root": { fontSize: 28 },
             position: "absolute",
@@ -106,13 +107,14 @@ export default function TodosItem({ data, index, onChange, onDelete}) {
         /> */}
         <textarea
           ref={textareaRef}
-          defaultValue={value}
+          value={value}
           readOnly={readOnly}
           className={"new-todo"}
-          style={complete ? completedTextStyle : {}}
+          style={completed ? completedTextStyle : {}}
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
+              setReadOnly(true);
               handleSubmit();
             }
           }}

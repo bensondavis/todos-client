@@ -105,11 +105,16 @@ footer {
   background: #666666;
 }
 
-a {
+.footer-link {
   text-decoration: none;
   color: #bfbfbf;
 }
 
 textarea {
 	transition: ease-in 0.2s;
+}
+
+.MuiPaper-root {
+  background-color: #FEFEFE !important;
+  color: black !important;
 }

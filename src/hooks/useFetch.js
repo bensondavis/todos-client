@@ -1,9 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
-const useFetch = (url) => {
+const useFetch = (url, setUser) => {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
   const handleGoogle = async (response) => {
@@ -18,14 +17,18 @@ const useFetch = (url) => {
 
         if (res.data.user) {
           localStorage.setItem("user", JSON.stringify(res.data.user));
-          setSuccess(true);
+          setUser(res.data.user);
         }
       })
       .catch((err) => {
-        setError("Error: " + err.response.data.message);
+        setError(
+          err?.response?.data?.message
+            ? err.response.data.message
+            : err.message
+        );
       });
   };
-  return { loading, error, handleGoogle, success, setSuccess};
+  return { loading, error, handleGoogle };
 };
 
 export default useFetch;

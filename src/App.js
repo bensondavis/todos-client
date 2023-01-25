@@ -1,5 +1,8 @@
 import "./App.css";
 import Typography from "@mui/material/Typography";
+import Snackbar from '@mui/material/Snackbar';
+import { Button, IconButton } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import "@fontsource/pacifico";
 import { useEffect, useState } from "react";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
@@ -10,6 +13,12 @@ import Home from "./pages/Home";
 
 function App() {
   const [user, setUser] = useState({});
+  const [error, setError] = useState("");
+  const [openError, setOpenError] = useState(false);
+
+  const handleClose = () => {
+    setOpenError(false);
+  }
 
   useEffect(() => {
     const theUser = localStorage.getItem("user");
@@ -33,9 +42,24 @@ function App() {
         })
         .catch((err) => {
           localStorage.removeItem("user");
+          setError("Session expired!");
+          setOpenError(true);
         });
     }
   }, []);
+
+  const action = (
+    <>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  );
 
   return (
     <div className="App">
@@ -56,7 +80,7 @@ function App() {
               user?.email ? (
                 <Navigate to="/home" />
               ) : (
-                <SignupPage setUser={setUser} />
+                <SignupPage setUser={setUser} setError={setError} setOpenError={setOpenError} />
               )
             }
           />
@@ -67,7 +91,7 @@ function App() {
               user?.email ? (
                 <Navigate to="/home" />
               ) : (
-                <LoginPage setUser={setUser} />
+                <LoginPage setUser={setUser} setError={setError} setOpenError={setOpenError} />
               )
             }
           />
@@ -85,11 +109,18 @@ function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
+      <Snackbar
+        autoHideDuration={6000}
+        open={openError}
+        onClose={handleClose}
+        message={error}
+        action={action}
+      />
       <footer>
-        <Typography variant="body2">Double-Click to edit</Typography>
+        {user?.email ? <Typography variant="body2">Double-Click to edit</Typography> : null}
         <Typography variant="body2">
           Made with ❤️ by{" "}
-          <a target={"_blank"} href="https://github.com/bensondavis">
+          <a className="footer-link" target={"_blank"} href="https://github.com/bensondavis">
             Benson
           </a>
         </Typography>
