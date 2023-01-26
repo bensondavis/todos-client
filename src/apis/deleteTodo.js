@@ -1,6 +1,30 @@
 import axios from "axios";
 import handleError from "../functions/handleError";
 
+const deleteCompleted = (user, setError, setTodoList, setUser, setOpenError) => {
+  const config = {
+    method: "post",
+    url: "http://localhost:8000/delete-completed",
+    data: {
+      email: user.email,
+    },
+    headers: {
+      Authorization: "Bearer " + user.token,
+    },
+  };
+
+  axios(config).catch((err) => {
+    if (err.response.status === 401)
+      handleError(
+        setUser,
+        setError,
+        setOpenError,
+        "Session Expired",
+        setTodoList
+      );
+  });
+}
+
 const deleteTodo = (user, id, setError, setTodoList, setUser, setOpenError) => {
   const config = {
     method: "post",
@@ -26,4 +50,4 @@ const deleteTodo = (user, id, setError, setTodoList, setUser, setOpenError) => {
   });
 };
 
-export default deleteTodo;
+export  {deleteTodo, deleteCompleted};

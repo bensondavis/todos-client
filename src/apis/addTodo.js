@@ -32,6 +32,7 @@ const addTodo = (
   };
 
   axios(config).catch((err) => {
+    console.log({err});
     if (err.response.status === 401)
       handleError(
         setUser,

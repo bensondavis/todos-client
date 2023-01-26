@@ -2,17 +2,23 @@ import Todos from "../components/Todos";
 import DoneIcon from "@mui/icons-material/Done";
 import AddIcon from "@mui/icons-material/Add";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
-import { IconButton, Checkbox } from "@mui/material";
+import { IconButton, Checkbox, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import addTodo from "../apis/addTodo";
 import getTodo from "../apis/getTodo";
 import AccountMenu from "../components/Menu";
 import { updateAllCompleted } from "../apis/update";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import Badge from "@mui/material/Badge";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
+import { deleteCompleted } from "../apis/deleteTodo";
+import Dialog from "../components/Dialog";
 
 const Home = ({ user, setUser, setError, setOpenError }) => {
   const [todoList, setTodoList] = useState([]);
-  const [completedCount, setCompletedCount] = useState(-1);
+  const [completedCount, setCompletedCount] = useState(0);
   const [todo, setTodo] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleChange = (value) => {
     setTodo(value);
@@ -59,22 +65,29 @@ const Home = ({ user, setUser, setError, setOpenError }) => {
     );
   }
 
+  const handleClickOpenDialog = () => {
+    setOpenDialog(!openDialog);
+  }
+
+  const handleClearCompleted = () => {
+    const editedTodoList = todoList.filter((todos)=> todos.completed === false)
+    setTodoList(editedTodoList);
+    deleteCompleted(user, setError, setTodoList, setUser, setOpenError);
+  }
+
   useEffect(() => {
     getTodo(user, setTodoList, setUser, setOpenError, setError);
   }, [user, setError, setUser, setOpenError]);
 
   useEffect(() => {
-    if (todoList.length !== 0) {
-      let count = 0;
-      todoList.map((todos) => {
-        if (todos.completed === true) {
-          count++;
-        }
-      });
-      setCompletedCount(count);
-    } else {
-      setCompletedCount(-1);
-    }
+    let count = 0;
+    todoList.map((todos) => {
+      if (todos.completed === true) {
+        count++;
+      }
+      return count;
+    });
+    setCompletedCount(count);
   }, [todoList]);
 
   return (
@@ -85,7 +98,7 @@ const Home = ({ user, setUser, setError, setOpenError }) => {
       >
         <AccountMenu user={user} onLogout={handleSignOut} />
         <Checkbox
-          checked={todoList.length ? completedCount === todoList.length : false}
+          checked={completedCount === todoList.length && todoList.length !== 0}
           sx={{
             "& .MuiSvgIcon-root": { fontSize: 28 },
             position: "absolute",
@@ -126,8 +139,28 @@ const Home = ({ user, setUser, setError, setOpenError }) => {
           setError={setError}
           setOpenError={setOpenError}
         />
+        <Badge
+          badgeContent={
+            todoList.length !== 0 ? todoList.length - completedCount : 0
+          }
+          sx={{ position: "absolute", bottom: 4, left: 20 }}
+          color="success"
+        >
+          <AssignmentIcon sx={{ color: "#4d4d4d" }} />
+        </Badge>
+        <Tooltip title="Clear completed">
+        <IconButton
+          sx={{ position: "absolute", bottom: -6, right: 20 }}
+          size="medium"
+          onClick={handleClickOpenDialog}
+        >
+          <Badge badgeContent={completedCount} color="success">
+            <ClearAllIcon sx={{ color: "#4d4d4d" }} fontSize="medium" />
+          </Badge>
+        </IconButton>
+        </Tooltip>
+        <Dialog open={openDialog} onClose={handleClickOpenDialog} handleClick={handleClearCompleted} />
       </div>
-      <p>defe</p>
     </>
   );
 };

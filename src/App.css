@@ -74,13 +74,16 @@ footer {
 }
 
 .outer {
-  width: 100vw;
+  /* width: 100%; */
+  max-width: 716px;
+  margin: auto;
   height: calc(100% - 168px);
+  position: relative;
 }
 
 .inner {
   width: 100%;
-  max-height: calc(100vh - 280px);
+  max-height: calc(100vh - 290px);
   overflow-x: hidden;
   overflow-y: overlay;
   
@@ -117,4 +120,8 @@ textarea {
 .MuiPaper-root {
   background-color: #FEFEFE !important;
   color: black !important;
+}
+
+.MuiBadge-badge {
+  background-color: #66C6B4 !important;
 }
