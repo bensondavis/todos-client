@@ -1,38 +1,37 @@
 import TodosItem from "./TodosItem";
 import deleteTodo from "../apis/deleteTodo";
-import {updateTodo, updateCompleted} from "../apis/update";
+import { updateTodo, updateCompleted } from "../apis/update";
 
-const Todos = ({ todoList, user, setTodoList }) => {
-
+const Todos = ({ todoList, user, setTodoList, setUser, setError, setOpenError }) => {
   const handleDelete = (id) => {
-    const editedTodoList = todoList.filter((todos) => id !== todos._id);
+    const editedTodoList = todoList.filter((todos) => id !== todos.id);
     setTodoList(editedTodoList);
-    deleteTodo(user.email, id, user.token);
-  }
+    deleteTodo(user, id, setError, setTodoList, setUser, setOpenError);
+  };
 
   const editTodo = (id, newTodo) => {
-    const editedTodoList = todoList.map((todos)=>{
-      if(id === todos._id) {
-        return {...todos, todoItem: newTodo}
+    const editedTodoList = todoList.map((todos) => {
+      if (id === todos.id) {
+        return { ...todos, todoItem: newTodo };
       }
 
       return todos;
-    })
+    });
     setTodoList(editedTodoList);
-    updateTodo(user.email, id, user.token, newTodo);
-  }
+    updateTodo(user, id, newTodo, setUser, setError, setOpenError, setTodoList);
+  };
 
   const editCompleted = (id, newCompleted) => {
-    const editedTodoList = todoList.map((todos)=>{
-      if(id === todos._id) {
-        return {...todos, completed: newCompleted}
+    const editedTodoList = todoList.map((todos) => {
+      if (id === todos.id) {
+        return { ...todos, completed: newCompleted };
       }
 
       return todos;
-    })
+    });
     setTodoList(editedTodoList);
-    updateCompleted(user.email, id, user.token, newCompleted);
-  }
+    updateCompleted(user, id, newCompleted, setUser, setError, setOpenError, setTodoList);
+  };
 
   return (
     <div className="inner">
@@ -41,8 +40,8 @@ const Todos = ({ todoList, user, setTodoList }) => {
             <TodosItem
               todoItem={data.todoItem}
               completed={data.completed}
-              key={data._id}
-              id={data._id}
+              key={data.id}
+              id={data.id}
               editTodo={editTodo}
               editCompleted={editCompleted}
               onDelete={handleDelete}

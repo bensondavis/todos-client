@@ -1,35 +1,46 @@
 import axios from "axios";
+import { ObjectID } from "bson";
+import handleError from "../functions/handleError";
 
-const addTodo = (email, content, token, setTodoList, todoList=[]) => {
+const addTodo = (
+  user,
+  setUser,
+  content,
+  setTodoList,
+  todoList,
+  setError,
+  setOpenError
+) => {
+  const id = new ObjectID();
+  const todoListItem = {
+    ...content,
+    id: id,
+  };
 
-  setTodoList([
-    ...todoList,
-    {
-      ...content,
-    },
-  ]);
-  
+  setTodoList([...todoList, todoListItem]);
+
   const config = {
     method: "post",
     url: "http://localhost:8000/add-todo",
     data: {
-      email: email,
-      content: content,
+      email: user.email,
+      content: todoListItem,
     },
     headers: {
-      Authorization: "Bearer " + token,
+      Authorization: "Bearer " + user.token,
     },
   };
 
-  axios(config);
-  // .then((res) => {
-  //   setTodoList([...todoList, {
-  //     ...content,
-  //   }]);
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  // });
+  axios(config).catch((err) => {
+    if (err.response.status === 401)
+      handleError(
+        setUser,
+        setError,
+        setOpenError,
+        "Session Expired",
+        setTodoList
+      );
+  });
 };
 
 export default addTodo;

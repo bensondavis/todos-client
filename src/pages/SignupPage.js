@@ -16,7 +16,7 @@ export default function SignupPage({ setUser, setError, setOpenError }) {
       setError(error);
       setOpenError(true);
     }
-  }, [error]);
+  }, [error, setError, setOpenError]);
 
   return (
     <Stack

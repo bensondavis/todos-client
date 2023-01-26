@@ -1,14 +1,15 @@
 import axios from "axios";
+import handleError from "../functions/handleError";
 
-const getTodo = (email, token, todoList, setTodoList) => {
+const getTodo = (user, setTodoList, setUser, setOpenError, setError) => {
   const config = {
     method: "post",
     url: "http://localhost:8000/get-todo-list",
     data: {
-      email: email,
+      email: user.email,
     },
     headers: {
-      Authorization: "Bearer " + token,
+      Authorization: "Bearer " + user.token,
     },
   };
 
@@ -17,7 +18,14 @@ const getTodo = (email, token, todoList, setTodoList) => {
       setTodoList(res.data.todoList);
     })
     .catch((err) => {
-      console.log({ err });
+      if (err.response.status === 401)
+        handleError(
+          setUser,
+          setError,
+          setOpenError,
+          "Session Expired",
+          setTodoList
+        );
     });
 };
 

@@ -1,7 +1,7 @@
 import Todos from "../components/Todos";
 import DoneIcon from "@mui/icons-material/Done";
 import AddIcon from "@mui/icons-material/Add";
-import DoneAllIcon from '@mui/icons-material/DoneAll';
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { IconButton, Checkbox } from "@mui/material";
 import { useEffect, useState } from "react";
 import addTodo from "../apis/addTodo";
@@ -9,9 +9,9 @@ import getTodo from "../apis/getTodo";
 import AccountMenu from "../components/Menu";
 import { updateAllCompleted } from "../apis/update";
 
-const Home = ({ user, setUser }) => {
+const Home = ({ user, setUser, setError, setOpenError }) => {
   const [todoList, setTodoList] = useState([]);
-  const [completedCount, setCompletedCount] = useState(0);
+  const [completedCount, setCompletedCount] = useState(-1);
   const [todo, setTodo] = useState("");
 
   const handleChange = (value) => {
@@ -24,7 +24,15 @@ const Home = ({ user, setUser }) => {
         completed: false,
         todoItem: todo,
       };
-      addTodo(user.email, content, user.token, setTodoList, todoList);
+      addTodo(
+        user,
+        setUser,
+        content,
+        setTodoList,
+        todoList,
+        setError,
+        setOpenError
+      );
       setTodo("");
     }
   };
@@ -35,40 +43,49 @@ const Home = ({ user, setUser }) => {
   }
 
   function handleCompleteAll(e) {
-    const editedTodoList = todoList.map((todos)=> {
+    const editedTodoList = todoList.map((todos) => {
       todos.completed = e.target.checked;
 
       return todos;
-    })
+    });
     setTodoList(editedTodoList);
-    console.log({editedTodoList});
-    updateAllCompleted(user.email, user.token, e.target.checked);
+    updateAllCompleted(
+      user,
+      e.target.checked,
+      setUser,
+      setError,
+      setOpenError,
+      setTodoList
+    );
   }
 
   useEffect(() => {
-    getTodo(user.email, user.token, todoList, setTodoList);
-  }, []);
+    getTodo(user, setTodoList, setUser, setOpenError, setError);
+  }, [user, setError, setUser, setOpenError]);
 
-  useEffect(()=> {
-    let count = 0;
-    todoList.map((todos)=> {
-      if(todos.completed === true) {
-        count++;
-      }
-    })
-    setCompletedCount(count);
-  },[todoList])
+  useEffect(() => {
+    if (todoList.length !== 0) {
+      let count = 0;
+      todoList.map((todos) => {
+        if (todos.completed === true) {
+          count++;
+        }
+      });
+      setCompletedCount(count);
+    } else {
+      setCompletedCount(-1);
+    }
+  }, [todoList]);
 
   return (
     <>
-      
       <div
         className="content"
         style={{ maxWidth: "700px", position: "relative" }}
       >
         <AccountMenu user={user} onLogout={handleSignOut} />
         <Checkbox
-          checked={completedCount === todoList.length}
+          checked={todoList.length ? completedCount === todoList.length : false}
           sx={{
             "& .MuiSvgIcon-root": { fontSize: 28 },
             position: "absolute",
@@ -87,7 +104,7 @@ const Home = ({ user, setUser }) => {
           value={todo}
           autoFocus={true}
           onChange={(e) => handleChange(e.target.value)}
-          onKeyUp={(e) => {
+          onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSubmit();
             }
@@ -101,8 +118,16 @@ const Home = ({ user, setUser }) => {
         </IconButton>
       </div>
       <div className="outer">
-        <Todos todoList={todoList} user={user} setTodoList={setTodoList} />
+        <Todos
+          todoList={todoList}
+          user={user}
+          setTodoList={setTodoList}
+          setUser={setUser}
+          setError={setError}
+          setOpenError={setOpenError}
+        />
       </div>
+      <p>defe</p>
     </>
   );
 };
