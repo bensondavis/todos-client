@@ -12,7 +12,6 @@ function GoogleAuth({ handleGoogle, setError, openError }) {
           handleGoogle(credentialResponse);
         }}
         onError={() => {
-          // console.log("Login Failed");
           setError("Login Failed");
           openError(true);
         }}

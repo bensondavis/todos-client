@@ -56,7 +56,7 @@ const updateAllCompleted = (
   };
 
   axios(config).catch((err) => {
-    if (err.response.status === 401)
+    if (err.response.status  && err.response.status === 401)
       handleError(
         setUser,
         setError,
