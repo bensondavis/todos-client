@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 export default function SignupPage({ setUser, setError, setOpenError }) {
   const { handleGoogle, loading, error } = useFetch(
-    "http://localhost:8000/signup",
+    "https://todos-server-mnch.onrender.com/signup",
     setUser
   );
 

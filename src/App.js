@@ -8,10 +8,6 @@ import "@fontsource/pacifico";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import axios from "axios";
-// import LoginPage from "./pages/LoginPage";
-// import SignupPage from "./pages/SignupPage";
-// import Home from "./pages/Home";
-// import LoadingPage from "./pages/LoadingPage";
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
@@ -40,7 +36,6 @@ function App() {
   const [user, setUser] = useState({});
   const [error, setError] = useState("");
   const [openError, setOpenError] = useState(false);
-  // const [loading, setLoading] = useState(true);
 
   const handleClose = () => {
     setOpenError(false);

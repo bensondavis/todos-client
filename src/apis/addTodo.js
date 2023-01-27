@@ -21,7 +21,7 @@ const addTodo = (
 
   const config = {
     method: "post",
-    url: "http://localhost:8000/add-todo",
+    url: "https://todos-server-mnch.onrender.com/add-todo",
     data: {
       email: user.email,
       content: todoListItem,

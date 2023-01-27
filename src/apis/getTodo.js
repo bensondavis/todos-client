@@ -4,7 +4,7 @@ import handleError from "../functions/handleError";
 const getTodo = (user, setTodoList, setUser, setOpenError, setError) => {
   const config = {
     method: "post",
-    url: "http://localhost:8000/get-todo-list",
+    url: "https://todos-server-mnch.onrender.com/get-todo-list",
     data: {
       email: user.email,
     },

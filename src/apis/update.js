@@ -12,7 +12,7 @@ const updateTodo = (
 ) => {
   const config = {
     method: "post",
-    url: "http://localhost:8000/update-todo-item",
+    url: "https://todos-server-mnch.onrender.com/update-todo-item",
     data: {
       email: user.email,
       id: id,
@@ -45,7 +45,7 @@ const updateAllCompleted = (
 ) => {
   const config = {
     method: "post",
-    url: "http://localhost:8000/update-all-todo",
+    url: "https://todos-server-mnch.onrender.com/update-all-todo",
     data: {
       email: user.email,
       completed: value,
@@ -78,7 +78,7 @@ const updateCompleted = (
 ) => {
   const config = {
     method: "post",
-    url: "http://localhost:8000/update-todo-completed",
+    url: "https://todos-server-mnch.onrender.com/update-todo-completed",
     data: {
       email: user.email,
       id: id,

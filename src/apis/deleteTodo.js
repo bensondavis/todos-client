@@ -4,7 +4,7 @@ import handleError from "../functions/handleError";
 const deleteCompleted = (user, setError, setTodoList, setUser, setOpenError) => {
   const config = {
     method: "post",
-    url: "http://localhost:8000/delete-completed",
+    url: "https://todos-server-mnch.onrender.com/delete-completed",
     data: {
       email: user.email,
     },
@@ -28,7 +28,7 @@ const deleteCompleted = (user, setError, setTodoList, setUser, setOpenError) => 
 const deleteTodo = (user, id, setError, setTodoList, setUser, setOpenError) => {
   const config = {
     method: "post",
-    url: "http://localhost:8000/delete-todo",
+    url: "https://todos-server-mnch.onrender.com/delete-todo",
     data: {
       email: user.email,
       id: id,

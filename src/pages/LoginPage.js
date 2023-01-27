@@ -7,7 +7,7 @@ import TryAgain from "../components/TryAgain";
 
 const LoginPage = ({ setUser, setError, setOpenError }) => {
   const { handleGoogle, loading, error } = useFetch(
-    "http://localhost:8000/login",
+    "https://todos-server-mnch.onrender.com/login",
     setUser
   );
 
