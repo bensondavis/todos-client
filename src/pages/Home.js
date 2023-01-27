@@ -14,7 +14,7 @@ import ClearAllIcon from "@mui/icons-material/ClearAll";
 import { deleteCompleted } from "../apis/deleteTodo";
 import Dialog from "../components/Dialog";
 
-const Home = ({ user, setUser, setError, setOpenError }) => {
+const Home = ({ user, setUser, setMessage, setOpenMsg }) => {
   const [todoList, setTodoList] = useState([]);
   const [completedCount, setCompletedCount] = useState(0);
   const [todo, setTodo] = useState("");
@@ -31,13 +31,12 @@ const Home = ({ user, setUser, setError, setOpenError }) => {
         todoItem: todo,
       };
       addTodo(
-        user,
-        setUser,
+        user.token,
         content,
         setTodoList,
         todoList,
-        setError,
-        setOpenError
+        setMessage,
+        setOpenMsg
       );
       setTodo("");
     }
@@ -55,29 +54,24 @@ const Home = ({ user, setUser, setError, setOpenError }) => {
       return todos;
     });
     setTodoList(editedTodoList);
-    updateAllCompleted(
-      user,
-      e.target.checked,
-      setUser,
-      setError,
-      setOpenError,
-      setTodoList
-    );
+    updateAllCompleted(user.token, e.target.checked, setMessage, setOpenMsg);
   }
 
   const handleClickOpenDialog = () => {
     setOpenDialog(!openDialog);
-  }
+  };
 
   const handleClearCompleted = () => {
-    const editedTodoList = todoList.filter((todos)=> todos.completed === false)
+    const editedTodoList = todoList.filter(
+      (todos) => todos.completed === false
+    );
     setTodoList(editedTodoList);
-    deleteCompleted(user, setError, setTodoList, setUser, setOpenError);
-  }
+    deleteCompleted(user.token, setMessage, setOpenMsg);
+  };
 
   useEffect(() => {
-    getTodo(user, setTodoList, setUser, setOpenError, setError);
-  }, [user, setError, setUser, setOpenError]);
+    getTodo(user.token, setTodoList, setOpenMsg, setMessage);
+  }, [user, setMessage, setUser, setOpenMsg]);
 
   useEffect(() => {
     let count = 0;
@@ -136,8 +130,8 @@ const Home = ({ user, setUser, setError, setOpenError }) => {
           user={user}
           setTodoList={setTodoList}
           setUser={setUser}
-          setError={setError}
-          setOpenError={setOpenError}
+          setMessage={setMessage}
+          setOpenMsg={setOpenMsg}
         />
         <Badge
           badgeContent={
@@ -149,17 +143,21 @@ const Home = ({ user, setUser, setError, setOpenError }) => {
           <AssignmentIcon sx={{ color: "#4d4d4d" }} />
         </Badge>
         <Tooltip title="Clear completed">
-        <IconButton
-          sx={{ position: "absolute", bottom: -6, right: 20 }}
-          size="medium"
-          onClick={handleClickOpenDialog}
-        >
-          <Badge badgeContent={completedCount} color="success">
-            <ClearAllIcon sx={{ color: "#4d4d4d" }} fontSize="medium" />
-          </Badge>
-        </IconButton>
+          <IconButton
+            sx={{ position: "absolute", bottom: -6, right: 20 }}
+            size="medium"
+            onClick={handleClickOpenDialog}
+          >
+            <Badge badgeContent={completedCount} color="success">
+              <ClearAllIcon sx={{ color: "#4d4d4d" }} fontSize="medium" />
+            </Badge>
+          </IconButton>
         </Tooltip>
-        <Dialog open={openDialog} onClose={handleClickOpenDialog} handleClick={handleClearCompleted} />
+        <Dialog
+          open={openDialog}
+          onClose={handleClickOpenDialog}
+          handleClick={handleClearCompleted}
+        />
       </div>
     </>
   );

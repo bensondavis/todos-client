@@ -1,15 +1,14 @@
 import axios from "axios";
 import { ObjectID } from "bson";
-import handleError from "../functions/handleError";
+import { SERVER_URL } from "../variables/global";
 
 const addTodo = (
-  user,
-  setUser,
+  token,
   content,
   setTodoList,
   todoList,
-  setError,
-  setOpenError
+  setMessage,
+  setOpenMsg
 ) => {
   const id = new ObjectID();
   const todoListItem = {
@@ -21,26 +20,20 @@ const addTodo = (
 
   const config = {
     method: "post",
-    url: "https://todos-server-mnch.onrender.com/add-todo",
+    url: SERVER_URL + "/add-todo",
     data: {
-      email: user.email,
       content: todoListItem,
     },
     headers: {
-      Authorization: "Bearer " + user.token,
+      Authorization: "Bearer " + token,
     },
   };
 
   axios(config).catch((err) => {
-    console.log({err});
-    if (err.response.status === 401)
-      handleError(
-        setUser,
-        setError,
-        setOpenError,
-        "Session Expired",
-        setTodoList
-      );
+    setMessage(
+      err?.response?.data ? err.response.data : "Unable to connect to server"
+    );
+    setOpenMsg(true);
   });
 };
 

@@ -1,9 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
-const useFetch = (url, setUser) => {
+const useFetch = (url, setUser, setMessage, setOpenMsg) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleGoogle = async (response) => {
     setLoading(true);
@@ -14,21 +13,22 @@ const useFetch = (url, setUser) => {
       })
       .then((res) => {
         setLoading(false);
-
-        if (res.data.user) {
-          localStorage.setItem("user", JSON.stringify(res.data.user));
-          setUser(res.data.user);
-        }
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        setUser(res.data.user);
+        setMessage(res.data.message);
+        setOpenMsg(true);
       })
       .catch((err) => {
-        setError(
-          err?.response?.data?.message
-            ? err.response.data.message
-            : err.message
+        setLoading(false);
+        setMessage(
+          err?.response?.data
+            ? err.response.data
+            : "Unable to connect to server"
         );
+        setOpenMsg(true);
       });
   };
-  return { loading, error, handleGoogle };
+  return { loading, handleGoogle };
 };
 
 export default useFetch;

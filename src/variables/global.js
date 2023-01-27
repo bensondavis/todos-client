@@ -1,0 +1,1 @@
+export const SERVER_URL = "https://todos-server-mnch.onrender.com";

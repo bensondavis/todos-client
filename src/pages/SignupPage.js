@@ -1,22 +1,16 @@
 import { Link } from "react-router-dom";
 import { Stack, CircularProgress } from "@mui/material";
 import GoogleAuth from "../components/GoogleAuth";
-import TryAgain from "../components/TryAgain";
 import useFetch from "../hooks/useFetch";
-import { useEffect } from "react";
+import { SERVER_URL } from "../variables/global";
 
-export default function SignupPage({ setUser, setError, setOpenError }) {
-  const { handleGoogle, loading, error } = useFetch(
-    "https://todos-server-mnch.onrender.com/signup",
-    setUser
+export default function SignupPage({ setUser, setMessage, setOpenMsg }) {
+  const { handleGoogle, loading } = useFetch(
+    SERVER_URL + "/signup",
+    setUser,
+    setMessage,
+    setOpenMsg
   );
-
-  useEffect(() => {
-    if (error !== "") {
-      setError(error);
-      setOpenError(true);
-    }
-  }, [error, setError, setOpenError]);
 
   return (
     <Stack
@@ -35,11 +29,11 @@ export default function SignupPage({ setUser, setError, setOpenError }) {
       ) : (
         <GoogleAuth
           handleGoogle={handleGoogle}
-          setError={setError}
-          openError={setOpenError}
+          setMessage={setMessage}
+          openMsg={setOpenMsg}
         />
       )}
-      {error ? <TryAgain /> : null}
+
       <p>
         <Link to={"/login"}>Already have an account? Login</Link>
       </p>

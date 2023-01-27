@@ -8,6 +8,7 @@ import "@fontsource/pacifico";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import axios from "axios";
+import { SERVER_URL } from "./variables/global";
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
@@ -34,40 +35,12 @@ const Loading = (
 
 function App() {
   const [user, setUser] = useState({});
-  const [error, setError] = useState("");
-  const [openError, setOpenError] = useState(false);
+  const [message, setMessage] = useState("");
+  const [openMsg, setOpenMsg] = useState(false);
 
   const handleClose = () => {
-    setOpenError(false);
+    setOpenMsg(false);
   };
-
-  useEffect(() => {
-    const theUser = localStorage.getItem("user");
-
-    if (theUser && !theUser.includes("undefined")) {
-      const tempUser = JSON.parse(theUser);
-
-      var config = {
-        method: "post",
-        url: "https://todos-server-mnch.onrender.com/login",
-        headers: {
-          Authorization: "Bearer " + tempUser.token,
-        },
-      };
-
-      axios(config)
-        .then((res) => {
-          if (res.status === 200) {
-            setUser(tempUser);
-          }
-        })
-        .catch((err) => {
-          localStorage.removeItem("user");
-          setError("Session expired!");
-          setOpenError(true);
-        });
-    }
-  }, []);
 
   const action = (
     <>
@@ -82,6 +55,54 @@ function App() {
     </>
   );
 
+  useEffect(() => {
+    const theUser = localStorage.getItem("user");
+
+    if (theUser && !theUser.includes("undefined")) {
+      const tempUser = JSON.parse(theUser);
+
+      var config = {
+        method: "post",
+        url: SERVER_URL + "/login",
+        headers: {
+          Authorization: "Bearer " + tempUser.token,
+        },
+      };
+
+      axios(config)
+        .then((res) => {
+          if (res.status === 200) {
+            setUser(tempUser);
+          }
+        })
+        .catch((err) => {
+          localStorage.removeItem("user");
+          setMessage(
+            err?.response?.data
+              ? err.response.data
+              : "Unable to connect to server"
+          );
+          setOpenMsg(true);
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (openMsg === true) {
+      const timer = setTimeout(() => {
+        setOpenMsg(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message, openMsg]);
+
+  useEffect(() => {
+    if (message === "Session Expired" && openMsg) {
+      setUser({});
+      localStorage.removeItem("user");
+    }
+  }, [message, openMsg]);
+
   return (
     <div className="App">
       <Typography
@@ -92,66 +113,68 @@ function App() {
         todos
       </Typography>
       <Suspense fallback={Loading}>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            exact
-            path="/signup"
-            element={
-              user?.email ? (
-                <Navigate to="/home" />
-              ) : (
-                <SignupPage
-                  setUser={setUser}
-                  setError={setError}
-                  setOpenError={setOpenError}
-                  
-                />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/login"
-            element={
-              user?.email ? (
-                <Navigate to="/home" />
-              ) : (
-                <LoginPage
-                  setUser={setUser}
-                  setError={setError}
-                  setOpenError={setOpenError}
-                  
-                />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/home"
-            element={
-              user?.email ? (
-                <Home
-                  user={user}
-                  setUser={setUser}
-                  setError={setError}
-                  setOpenError={setOpenError}
-                  
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </BrowserRouter>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              exact
+              path="/signup"
+              element={
+                user?.email ? (
+                  <Navigate to="/home" />
+                ) : (
+                  <SignupPage
+                    setUser={setUser}
+                    setMessage={setMessage}
+                    setOpenMsg={setOpenMsg}
+                  />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/login"
+              element={
+                user?.email ? (
+                  <Navigate to="/home" />
+                ) : (
+                  <LoginPage
+                    setUser={setUser}
+                    setMessage={setMessage}
+                    setOpenMsg={setOpenMsg}
+                  />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/home"
+              element={
+                user?.email ? (
+                  <Home
+                    user={user}
+                    setUser={setUser}
+                    setMessage={setMessage}
+                    setOpenMsg={setOpenMsg}
+                  />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </BrowserRouter>
       </Suspense>
       <Snackbar
-        autoHideDuration={6000}
-        open={openError}
+        open={openMsg}
         onClose={handleClose}
-        message={error}
+        message={
+          message?.response?.data
+            ? message.response.data
+            : message?.message
+            ? message.message
+            : message
+        }
         action={action}
       />
       <footer>

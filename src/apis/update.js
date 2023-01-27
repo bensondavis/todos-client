@@ -1,103 +1,65 @@
 import axios from "axios";
-import handleError from "../functions/handleError";
+import { SERVER_URL } from "../variables/global";
 
-const updateTodo = (
-  user,
-  id,
-  value,
-  setUser,
-  setError,
-  setOpenError,
-  setTodoList
-) => {
+const updateTodo = (token, id, value, setMessage, setOpenMsg) => {
   const config = {
     method: "post",
-    url: "https://todos-server-mnch.onrender.com/update-todo-item",
+    url: SERVER_URL + "/update-todo-item",
     data: {
-      email: user.email,
       id: id,
       todoItem: value,
     },
     headers: {
-      Authorization: "Bearer " + user.token,
+      Authorization: "Bearer " + token,
     },
   };
 
   axios(config).catch((err) => {
-    if (err.response.status === 401)
-      handleError(
-        setUser,
-        setError,
-        setOpenError,
-        "Session Expired",
-        setTodoList
-      );
+    setMessage(
+      err?.response?.data ? err.response.data : "Unable to connect to server"
+    );
+    setOpenMsg(true);
   });
 };
 
-const updateAllCompleted = (
-  user,
-  value,
-  setUser,
-  setError,
-  setOpenError,
-  setTodoList
-) => {
+const updateAllCompleted = (token, value, setMessage, setOpenMsg) => {
   const config = {
     method: "post",
-    url: "https://todos-server-mnch.onrender.com/update-all-todo",
+    url: SERVER_URL + "/update-all-todo",
     data: {
-      email: user.email,
       completed: value,
     },
     headers: {
-      Authorization: "Bearer " + user.token,
+      Authorization: "Bearer " + token,
     },
   };
 
   axios(config).catch((err) => {
-    if (err.response.status  && err.response.status === 401)
-      handleError(
-        setUser,
-        setError,
-        setOpenError,
-        "Session Expired",
-        setTodoList
-      );
+    setMessage(
+      err?.response?.data ? err.response.data : "Unable to connect to server"
+    );
+    setOpenMsg(true);
   });
 };
 
-const updateCompleted = (
-  user,
-  id,
-  value,
-  setUser,
-  setError,
-  setOpenError,
-  setTodoList
-) => {
+const updateCompleted = (token, id, value, setMessage, setOpenMsg) => {
   const config = {
     method: "post",
-    url: "https://todos-server-mnch.onrender.com/update-todo-completed",
+    url: SERVER_URL + "/update-todo-completed",
     data: {
-      email: user.email,
       id: id,
       completed: value,
     },
     headers: {
-      Authorization: "Bearer " + user.token,
+      Authorization: "Bearer " + token,
     },
   };
 
   axios(config).catch((err) => {
-    if (err.response.status === 401)
-      handleError(
-        setUser,
-        setError,
-        setOpenError,
-        "Session Expired",
-        setTodoList
-      );
+    setMessage(err?.response?.data
+      ? err.response.data
+      : "Unable to connect to server");
+    setOpenMsg(true);
   });
 };
 

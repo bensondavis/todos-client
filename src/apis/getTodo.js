@@ -1,15 +1,12 @@
 import axios from "axios";
-import handleError from "../functions/handleError";
+import { SERVER_URL } from "../variables/global";
 
-const getTodo = (user, setTodoList, setUser, setOpenError, setError) => {
+const getTodo = (token, setTodoList, setOpenMsg, setMessage) => {
   const config = {
     method: "post",
-    url: "https://todos-server-mnch.onrender.com/get-todo-list",
-    data: {
-      email: user.email,
-    },
+    url: SERVER_URL + "/get-todo-list",
     headers: {
-      Authorization: "Bearer " + user.token,
+      Authorization: "Bearer " + token,
     },
   };
 
@@ -18,14 +15,10 @@ const getTodo = (user, setTodoList, setUser, setOpenError, setError) => {
       setTodoList(res.data.todoList);
     })
     .catch((err) => {
-      if (err.response.status === 401)
-        handleError(
-          setUser,
-          setError,
-          setOpenError,
-          "Session Expired",
-          setTodoList
-        );
+      setMessage(
+        err?.response?.data ? err.response.data : "Unable to connect to server"
+      );
+      setOpenMsg(true);
     });
 };
 

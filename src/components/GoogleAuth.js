@@ -1,6 +1,6 @@
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
-function GoogleAuth({ handleGoogle, setError, openError }) {
+function GoogleAuth({ handleGoogle, setMessage, openMsg }) {
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
       <GoogleLogin
@@ -12,8 +12,8 @@ function GoogleAuth({ handleGoogle, setError, openError }) {
           handleGoogle(credentialResponse);
         }}
         onError={() => {
-          setError("Login Failed");
-          openError(true);
+          setMessage("Login Failed");
+          openMsg(true);
         }}
       />
     </GoogleOAuthProvider>

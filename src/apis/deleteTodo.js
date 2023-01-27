@@ -1,53 +1,41 @@
 import axios from "axios";
-import handleError from "../functions/handleError";
+import { SERVER_URL } from "../variables/global";
 
-const deleteCompleted = (user, setError, setTodoList, setUser, setOpenError) => {
+const deleteCompleted = (token, setMessage, setOpenMsg) => {
   const config = {
     method: "post",
-    url: "https://todos-server-mnch.onrender.com/delete-completed",
-    data: {
-      email: user.email,
-    },
+    url: SERVER_URL + "/delete-completed",
     headers: {
-      Authorization: "Bearer " + user.token,
+      Authorization: "Bearer " + token,
     },
   };
 
   axios(config).catch((err) => {
-    if (err.response.status === 401)
-      handleError(
-        setUser,
-        setError,
-        setOpenError,
-        "Session Expired",
-        setTodoList
-      );
-  });
-}
-
-const deleteTodo = (user, id, setError, setTodoList, setUser, setOpenError) => {
-  const config = {
-    method: "post",
-    url: "https://todos-server-mnch.onrender.com/delete-todo",
-    data: {
-      email: user.email,
-      id: id,
-    },
-    headers: {
-      Authorization: "Bearer " + user.token,
-    },
-  };
-
-  axios(config).catch((err) => {
-    if (err.response.status === 401)
-      handleError(
-        setUser,
-        setError,
-        setOpenError,
-        "Session Expired",
-        setTodoList
-      );
+    setMessage(
+      err?.response?.data ? err.response.data : "Unable to connect to server"
+    );
+    setOpenMsg(true);
   });
 };
 
-export  {deleteTodo, deleteCompleted};
+const deleteTodo = (token, id, setMessage, setOpenMsg) => {
+  const config = {
+    method: "post",
+    url: SERVER_URL + "/delete-todo",
+    data: {
+      id: id,
+    },
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  };
+
+  axios(config).catch((err) => {
+    setMessage(
+      err?.response?.data ? err.response.data : "Unable to connect to server"
+    );
+    setOpenMsg(true);
+  });
+};
+
+export { deleteTodo, deleteCompleted };

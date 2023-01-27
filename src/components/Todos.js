@@ -18,15 +18,15 @@ const Todos = ({
   user,
   setTodoList,
   setUser,
-  setError,
-  setOpenError,
+  setMessage,
+  setOpenMsg,
 }) => {
   const [filter, setFilter] = useState("All");
 
   const handleDelete = (id) => {
     const editedTodoList = todoList.filter((todos) => id !== todos.id);
     setTodoList(editedTodoList);
-    deleteTodo(user, id, setError, setTodoList, setUser, setOpenError);
+    deleteTodo(user.token, id, setMessage, setOpenMsg);
   };
 
   const editTodo = (id, newTodo) => {
@@ -38,7 +38,7 @@ const Todos = ({
       return todos;
     });
     setTodoList(editedTodoList);
-    updateTodo(user, id, newTodo, setUser, setError, setOpenError, setTodoList);
+    updateTodo(user.token, id, newTodo, setMessage, setOpenMsg);
   };
 
   const editCompleted = (id, newCompleted) => {
@@ -50,15 +50,7 @@ const Todos = ({
       return todos;
     });
     setTodoList(editedTodoList);
-    updateCompleted(
-      user,
-      id,
-      newCompleted,
-      setUser,
-      setError,
-      setOpenError,
-      setTodoList
-    );
+    updateCompleted(user.token, id, newCompleted, setMessage, setOpenMsg);
   };
 
   return (
